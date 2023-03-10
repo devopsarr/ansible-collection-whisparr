@@ -1,0 +1,34 @@
+---
+- name: create tag
+  devopsarr.whisparr.whisparr_tag:
+    label: 'hello'
+    whisparr_api_key: "{{ whisparr_api_key }}"
+    whisparr_url: "{{ whisparr_url }}"
+  register: result
+- name: assert tag creation
+  assert:
+    that:
+      - result['label'] == 'hello'
+# ----------------------------------------------------------------------------
+- name: create already present tag
+  devopsarr.whisparr.whisparr_tag:
+    label: 'hello'
+    whisparr_api_key: "{{ whisparr_api_key }}"
+    whisparr_url: "{{ whisparr_url }}"
+  register: result
+- name: assert tag idempotency
+  assert:
+    that:
+      - result.changed == false
+# ----------------------------------------------------------------------------
+- name: delete tag
+  devopsarr.whisparr.whisparr_tag:
+    label: 'hello'
+    state: 'absent'
+    whisparr_api_key: "{{ whisparr_api_key }}"
+    whisparr_url: "{{ whisparr_url }}"
+  register: result
+- name: assert tag deletion
+  assert:
+    that:
+      - result['id'] == 0
