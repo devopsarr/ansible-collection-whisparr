@@ -1,0 +1,34 @@
+---
+    - name: create root folder
+      devopsarr.whisparr.whisparr_root_folder:
+        path: '/tmp'
+        whisparr_api_key: "{{ whisparr_api_key }}"
+        whisparr_url: "{{ whisparr_url }}"
+      register: result
+    - name: assert root folder creation
+      assert:
+        that:
+          - result['path'] == '/tmp'
+    # ----------------------------------------------------------------------------
+    - name: create already present root folder
+      devopsarr.whisparr.whisparr_root_folder:
+        path: '/tmp'
+        whisparr_api_key: "{{ whisparr_api_key }}"
+        whisparr_url: "{{ whisparr_url }}"
+      register: result
+    - name: assert root folder idempotency
+      assert:
+        that:
+          - result.changed == false
+    # ----------------------------------------------------------------------------
+    - name: delete root folder
+      devopsarr.whisparr.whisparr_root_folder:
+        path: '/tmp'
+        state: 'absent'
+        whisparr_api_key: "{{ whisparr_api_key }}"
+        whisparr_url: "{{ whisparr_url }}"
+      register: result
+    - name: assert root folder deletion
+      assert:
+        that:
+          - result['id'] == 0

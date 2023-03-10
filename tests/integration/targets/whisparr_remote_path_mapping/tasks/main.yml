@@ -1,0 +1,40 @@
+---
+    - name: create remote path mapping
+      devopsarr.whisparr.whisparr_remote_path_mapping:
+        host: 'transmission'
+        remote_path: '/tmp/'
+        local_path: '/tmp/'
+        whisparr_api_key: "{{ whisparr_api_key }}"
+        whisparr_url: "{{ whisparr_url }}"
+      register: result
+    - name: assert remote path mapping creation
+      assert:
+        that:
+          - result['remote_path'] == '/tmp/'
+    # ----------------------------------------------------------------------------
+    - name: check idempotency
+      devopsarr.whisparr.whisparr_remote_path_mapping:
+        host: 'transmission'
+        remote_path: '/tmp/'
+        local_path: '/tmp/'
+        whisparr_api_key: "{{ whisparr_api_key }}"
+        whisparr_url: "{{ whisparr_url }}"
+      register: result
+    - name: assert remote path mapping idempotency
+      assert:
+        that:
+          - result.changed == false
+    # ----------------------------------------------------------------------------
+    - name: delete remote path mapping
+      devopsarr.whisparr.whisparr_remote_path_mapping:
+        host: 'transmission'
+        remote_path: '/tmp/'
+        local_path: '/tmp/'
+        state: absent
+        whisparr_api_key: "{{ whisparr_api_key }}"
+        whisparr_url: "{{ whisparr_url }}"
+      register: result
+    - name: assert remote path mapping deletion
+      assert:
+        that:
+          - result['id'] == 0
